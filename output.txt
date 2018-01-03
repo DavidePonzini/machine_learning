@@ -1,0 +1,35 @@
+
+ fold 1 from 2011-01-31 to 2012-06-20 no_elems 273
+rand_forest:	 0.481751824818
+k-near_neigh:	 0.481751824818
+supp_vect_m:	 0.554744525547
+ada_boost:		 0.510948905109
+gtree_boost:	 0.467153284672
+
+ fold 2 from 2011-01-31 to 2013-10-24 no_elems 546
+rand_forest:	 0.498168498168
+k-near_neigh:	 0.461538461538
+supp_vect_m:	 0.589743589744
+ada_boost:		 0.501831501832
+gtree_boost:	 0.549450549451
+
+ fold 3 from 2011-01-31 to 2015-03-25 no_elems 819
+rand_forest:	 0.541463414634
+k-near_neigh:	 0.521951219512
+supp_vect_m:	 0.578048780488
+ada_boost:		 0.534146341463
+gtree_boost:	 0.531707317073
+
+ fold 4 from 2011-01-31 to 2016-08-03 no_elems 1092
+rand_forest:	 0.571428571429
+k-near_neigh:	 0.5
+supp_vect_m:	 0.545787545788
+ada_boost:		 0.554945054945
+gtree_boost:	 0.527472527473
+
+ fold 5 from 2011-01-31 to 2017-12-12 no_elems 1365
+rand_forest:	 0.560761346999
+k-near_neigh:	 0.531478770132
+supp_vect_m:	 0.544655929722
+ada_boost:		 0.512445095168
+gtree_boost:	 0.544655929722
