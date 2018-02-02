@@ -1,5 +1,4 @@
 import pandas
-from sklearn import preprocessing
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
@@ -43,27 +42,50 @@ def test_all(dataset: pandas.DataFrame, perc=0.5, idx_start=0, idx_end=None, out
     print('gtree_boost:\t', gradient_tree_boosting(xtr, ytr, xts, yts), file=output_file)
 
 
+def test(dataset: pandas.DataFrame, min_size=100, step=1):
+    res_rf = []
+    res_knn = []
+    res_ada_b = []
+    res_svm = []
+    res_gtree_b = []
+
+    for i in range(min_size, len(dataset), step):
+        print(i)
+
+        xtr, ytr, xts, yts = prepare_dataset(dataset, idx_start=0, idx_end=i)
+        res_rf.append(random_forest(xtr, ytr, xts, yts))
+        #res_knn.append(knn(xtr, ytr, xts, yts))
+        #res_ada_b.append(adaptive_boosting(xtr, ytr, xts, yts))
+        #res_gtree_b.append(gradient_tree_boosting(xtr, ytr, xts, yts))
+        #res_svm.append(svm(xtr, ytr, xts, yts))
+
+    return {
+        'rf':      util.list_avg(res_rf),
+        'knn':     util.list_avg(res_knn),
+        'ada_b':   util.list_avg(res_ada_b),
+        'gtree_b': util.list_avg(res_gtree_b),
+        'svm':     util.list_avg(res_svm)
+    }
+
+
 def prepare_dataset(dataset, perc_test=0.5, idx_start=0, idx_end=None):
     if not idx_end:
         idx_end = len(dataset)
     dataset = util.trim_dataset(dataset, idx_start, idx_end)
 
-    start_test = int(len(dataset) * perc_test)
+    # start_test = int(len(dataset) * perc_test)
 
     features_x = dataset.columns[1:-1]
     features_y = dataset.columns[-1]
 
-    label_encoder = preprocessing.LabelEncoder()
-    dataset[features_y] = label_encoder.fit(dataset[features_y]).transform(dataset[features_y])
-
     x = dataset[features_x]
     y = dataset[features_y]
 
-    xtr = x.iloc[:start_test]
-    ytr = y.iloc[:start_test]
+    xtr = x.iloc[:-1]
+    ytr = y.iloc[:-1]
 
-    xts = x.iloc[start_test:]
-    yts = y.iloc[start_test:]
+    xts = [x.iloc[-1]]
+    yts = [y.iloc[-1]]
 
     return xtr, ytr, xts, yts
 
@@ -74,7 +96,7 @@ def _classify(classifier, xtr, ytr, xts, yts):
 
 
 def random_forest(xtr, ytr, xts, yts):
-    classifier = RandomForestClassifier(n_estimators=1000)
+    classifier = RandomForestClassifier(n_estimators=100)
     return _classify(classifier, xtr, ytr, xts, yts)
 
 
