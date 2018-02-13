@@ -54,10 +54,10 @@ def test(dataset: pandas.DataFrame, min_size=100, step=1):
 
         xtr, ytr, xts, yts = prepare_dataset(dataset, idx_start=0, idx_end=i)
         res_rf.append(random_forest(xtr, ytr, xts, yts))
-        #res_knn.append(knn(xtr, ytr, xts, yts))
-        #res_ada_b.append(adaptive_boosting(xtr, ytr, xts, yts))
-        #res_gtree_b.append(gradient_tree_boosting(xtr, ytr, xts, yts))
-        #res_svm.append(svm(xtr, ytr, xts, yts))
+        res_knn.append(knn(xtr, ytr, xts, yts))
+        res_ada_b.append(adaptive_boosting(xtr, ytr, xts, yts))
+        res_gtree_b.append(gradient_tree_boosting(xtr, ytr, xts, yts))
+        res_svm.append(svm(xtr, ytr, xts, yts))
 
     return {
         'rf':      util.list_avg(res_rf),

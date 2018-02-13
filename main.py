@@ -1,9 +1,11 @@
+from matplotlib import pyplot as plt
 from importlib import reload
 from pandas import DataFrame
 import data_gather
 import feature_generation
 import learning
 import util
+import itertools
 
 reload(data_gather)
 reload(learning)
@@ -11,10 +13,13 @@ reload(feature_generation)
 reload(util)
 
 
-def test(features):
+def test(features, feature_tested):
     result = {}
-    for returns, returns_lag, rollmean, rollmean_lag in features:
-        idx = util.to_tuple(returns, returns_lag, rollmean, rollmean_lag)
+    for feature in features:
+        print(feature)
+        returns, returns_lag, rollmean, rollmean_lag = feature
+
+        idx = feature[feature_tested][-1]
         result[idx] = test2(returns, returns_lag, rollmean, rollmean_lag)
 
     if output_file is not None:
@@ -49,18 +54,37 @@ def create_dataset(returns, returns_lag, rollmean, rollmean_lag):
     return dataset
 
 
+def plot(result, title):
+    x = []
+    for alg in result.columns:
+        x.append(result.index)
+        x.append(result[alg])
+
+    plt.plot(*x)
+    plt.legend(result.columns)
+    plt.title(title)
+
+    plt.show()
+
+
+def generate_features(returns, returns_lag, rollmean, rollmean_lag):
+    return list(itertools.product(returns, returns_lag, rollmean, rollmean_lag))
+
+
 # configurable parameters #
 output_file = open('out.txt', 'w')
-step = 100
-# features = [([1, 2, 3], [1, 2], [2, 3], [])]
-features = util.generate_features((3, 3), 9, 2, 0)
+step = 1
 
-result = test(features)
+# best return
+# features_returns = generate_features(util.increasing_sequence(9), [[1]], [[1]], [[1]])
+# result_returns = test(features_returns, 0)
 
-rf = result['rf']
+# best return lag
+# features_returns = generate_features(util.increasing_sequence(9), util.increasing_sequence(5), [[1]], [[1]])
+# result_returns = test(features_returns, 1)
 
-import seaborn
+features_returns = generate_features([util.sequence(3)], [[1]], util.increasing_sequence(5)[1:3], [[1]])
+result_returns = test(features_returns, 2)
 
-z = result.reset_index()
-seaborn.factorplot(x='level_1', y='rf', data=z)
-pyplot.show()
+result_returns.to_csv('3-1-3-1.csv')
+plot(result_returns, 'rolling mean')
