@@ -42,7 +42,25 @@ def test_all(dataset: pandas.DataFrame, perc=0.5, idx_start=0, idx_end=None, out
     print('gtree_boost:\t', gradient_tree_boosting(xtr, ytr, xts, yts), file=output_file)
 
 
-def test(dataset: pandas.DataFrame, min_size=100, step=1):
+def tune_svm(dataset: pandas.DataFrame, cs, min_size=1000, step=1):
+    res = {}
+
+    for c in cs:
+        tmp = []
+        for i in range(min_size, len(dataset), step):
+            print(i, '/', len(dataset), '\tc=', c, sep='')
+
+            xtr, ytr, xts, yts = prepare_dataset(dataset, idx_start=0, idx_end=i)
+            cls = SVC(C=c)
+            val = _classify(cls, xtr, ytr, xts, yts)
+            tmp.append(val)
+
+        res[c] = util.list_avg(tmp)
+
+    return pandas.Series(res)
+
+
+def test(dataset: pandas.DataFrame, min_size=1000, step=1):
     res_rf = []
     res_knn = []
     res_ada_b = []

@@ -6,6 +6,7 @@ import feature_generation
 import learning
 import util
 import itertools
+import numpy as np
 
 reload(data_gather)
 reload(learning)
@@ -54,7 +55,7 @@ def create_dataset(returns, returns_lag, rollmean, rollmean_lag):
     return dataset
 
 
-def plot(result, title):
+def plot(result, x_label):
     x = []
     for alg in result.columns:
         x.append(result.index)
@@ -62,7 +63,8 @@ def plot(result, title):
 
     plt.plot(*x)
     plt.legend(result.columns)
-    plt.title(title)
+    plt.xlabel(x_label)
+    plt.ylabel('error')
 
     plt.show()
 
@@ -72,19 +74,36 @@ def generate_features(returns, returns_lag, rollmean, rollmean_lag):
 
 
 # configurable parameters #
-output_file = open('out.txt', 'w')
+output_file = None  # open('out.txt', 'w')
 step = 1
 
 # best return
 # features_returns = generate_features(util.increasing_sequence(9), [[1]], [[1]], [[1]])
 # result_returns = test(features_returns, 0)
+# plot(result_returns, 'returns')
 
 # best return lag
 # features_returns = generate_features(util.increasing_sequence(9), util.increasing_sequence(5), [[1]], [[1]])
 # result_returns = test(features_returns, 1)
+# plot(result_returns, 'returns lag')
 
-features_returns = generate_features([util.sequence(3)], [[1]], util.increasing_sequence(5)[1:3], [[1]])
-result_returns = test(features_returns, 2)
+# best rolling mean
+# features_returns = generate_features([util.sequence(3)], [[1]], util.increasing_sequence(9), [[1]])
+# result_returns = test(features_returns, 2)
+# plot(result_returns, 'rolling mean')
 
-result_returns.to_csv('3-1-3-1.csv')
-plot(result_returns, 'rolling mean')
+# best rolling mean lag
+# features_returns = generate_features([util.sequence(3)], [[1]], [util.sequence(2)], util.increasing_sequence(5))
+# result_returns = test(features_returns, 3)
+# plot(result_returns, 'rolling mean lag')
+
+
+# best parameter for svm
+best_dataset = create_dataset(util.sequence(3), [1], util.sequence(2), [])
+param_tuning = learning.tune_svm(best_dataset, np.logspace(-3, 3, 20), step=1)
+
+plt.plot(param_tuning)
+plt.xscale('log')
+plt.xlabel('c')
+plt.ylabel('error')
+plt.show()
