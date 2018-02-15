@@ -1,6 +1,7 @@
 from pandas import DataFrame
 import itertools
 from matplotlib import pyplot
+from matplotlib import pyplot as plt
 
 def trim_dataset(dataset: DataFrame, idx_start: int, idx_end: int):
     return dataset.iloc[idx_start:idx_end]
@@ -63,10 +64,15 @@ def to_tuple(*args):
 
     return tuple(res)
 
+def plot(result, x_label):
+    x = []
+    for alg in result.columns:
+        x.append(result.index)
+        x.append(result[alg])
 
-def plot(series):
-    x = [i[0] for i in list(series.index)]
-    y = list(series.values)
+    plt.plot(*x)
+    plt.legend(result.columns)
+    plt.xlabel(x_label)
+    plt.ylabel('error')
 
-    pyplot.plot(x, y)
-    pyplot.show()
+    plt.show()

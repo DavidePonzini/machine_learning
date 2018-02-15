@@ -48,7 +48,7 @@ def tune_svm(dataset: pandas.DataFrame, cs, min_size=1000, step=1):
     for c in cs:
         tmp = []
         for i in range(min_size, len(dataset), step):
-            print(i, '/', len(dataset), '\tc=', c, sep='')
+            print('Testing element ', i, '/', len(dataset), '\tc=', c, sep='')
 
             xtr, ytr, xts, yts = prepare_dataset(dataset, idx_start=0, idx_end=i)
             cls = SVC(C=c)

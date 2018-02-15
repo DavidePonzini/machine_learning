@@ -3,6 +3,21 @@ import data_gather
 from sklearn import preprocessing
 
 
+def create_dataset(returns, returns_lag, rollmean, rollmean_lag):
+    australia = generate_dataset('axjo', returns, returns_lag, rollmean, rollmean_lag)
+    dow_jones = generate_dataset('dji', returns, returns_lag, rollmean, rollmean_lag)
+    frankfurt = generate_dataset('gdaxi', returns, returns_lag, rollmean, rollmean_lag)
+    hongkong = generate_dataset('hsi', returns, returns_lag, rollmean, rollmean_lag)
+    nasdaq = generate_dataset('ixic', returns, returns_lag, rollmean, rollmean_lag)
+    nikkei = generate_dataset('n225', returns, returns_lag, rollmean, rollmean_lag)
+    paris = generate_dataset('fchi', returns, returns_lag, rollmean, rollmean_lag)
+    sp500 = generate_dataset('sp500tr', returns, returns_lag, rollmean, rollmean_lag, b_generate_output=True)
+
+    dataset = join_all([australia, dow_jones, frankfurt, hongkong, nasdaq, nikkei, paris, sp500])
+
+    return dataset
+
+
 def generate_dataset(symbol: str, returns: [], returns_lag: [], rollmean: [], rollmean_lag: [], b_generate_output: bool=False):
     ds = data_gather.read_data(symbol)
 
